@@ -1,0 +1,9 @@
+[submodule "src/lib/spectoda-js"]
+	path = src/lib/spectoda-js
+	url = https://github.com/Spectoda/spectoda-js.git
+[submodule "src/lib/wavelet"]
+	path = src/lib/wavelet
+	url = https://github.com/ryohey/wavelet.git
+[submodule "src/lib/midifile-ts"]
+	path = src/lib/midifile-ts
+	url = https://github.com/sirluky/midifile-ts.git
