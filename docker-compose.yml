@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  adminer:
+    image: dockette/adminer:dg
+    restart: always
+    ports:
+      - 8000:80
+    networks:
+      - pgdirect
+    deploy:
+      resources:
+        limits:
+          memory: 800M
+
+  postgres:
+    image: postgres
+    ports:
+      - 25432:5432
+    networks:
+      - pgdirect
+    restart: always
+    env_file:
+      - ./secrets.env
+
+
+networks:
+  pgdirect:
