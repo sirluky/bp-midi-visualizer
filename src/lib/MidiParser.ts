@@ -39,7 +39,7 @@ export class MidiParser {
             event.index = eventIndex;
             event.trackIndex = trackIndex;
 
-            if (event.type === "meta" && event.subtype === "lyrics") {
+            if (event.type === "meta" && (event.subtype === "lyrics" || event.subtype === "text")) {
               const text = event.text.replace("\r", "\n");
 
               lyrics.push({ text, index: eventIndex, trackIndex });
