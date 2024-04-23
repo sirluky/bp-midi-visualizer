@@ -15,7 +15,11 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center overflow-y-hidden">
-      <h1 className="mb-8 text-3xl font-bold">Přihlášení</h1>
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl font-bold ">Vítejte v Karaoke MIDI Vizualizátoru</h1>
+        <p className="mt-2 text-xl text-gray-600">Přihlaste se a začněte přehrávat vaše oblíbené MIDI.</p>
+      </div>
+      {/* <h1 className="mb-8 text-3xl font-bold">Přihlášení</h1> */}
       <div className="login-options">
         <div className="bg-discord hover:bg-discord/80 flex cursor-pointer items-center justify-center rounded-lg border p-4 shadow-md transition-colors" onClick={() => signIn("discord")}>
           <DiscordIcon className="mr-4 w-8 dark:fill-black" />
