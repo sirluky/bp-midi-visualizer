@@ -47,7 +47,18 @@ export default function MidiList() {
           const arrayBuffer = reader.result as ArrayBuffer;
           const midiData = new Uint8Array(arrayBuffer);
           const midi = read(midiData);
-          const parsedMidi = MidiParser.parse(midiData);
+          let parsedMidi;
+          try {
+            parsedMidi = MidiParser.parse(midiData);
+          } catch (error) {
+            console.log("Error in parsing file, skipping", file.name);
+            setUploadStatus(prevStatus => ({
+              ...prevStatus,
+              [file.name]: "poškozený soubor",
+            }));
+            return;
+          }
+
           const { introText, lyrics } = parsedMidi || {
             introText: [],
             lyrics: [],
