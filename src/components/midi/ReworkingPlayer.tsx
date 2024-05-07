@@ -32,7 +32,7 @@ function SoundFontPicker({ setup, loadProgress }: { setup: any; loadProgress: nu
   }
 
   return (
-    <div className="mb-4 flex flex-col items-center">
+    <div className="mb-4 mt-3 flex flex-col items-center">
       <p className="font-bold dark:text-white">Výběr soundfontu</p>
       <select className="rounded-lg border bg-white px-4 py-2 leading-tight text-black focus:outline-none focus:ring dark:bg-gray-700 dark:text-white" value={selectedSoundfont} onChange={e => setSoundFont(e.target.value)}>
         {soundfonts.map(soundfont => (
