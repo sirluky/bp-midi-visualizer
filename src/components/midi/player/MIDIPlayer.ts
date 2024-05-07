@@ -132,6 +132,10 @@ export class MIDIPlayer {
       case "channel":
         e.enabled = useMidiStore.getState().checkChannelEnabledById(e.channel);
 
+        if (e.subtype === "controller" && e.controllerType === 32) {
+          return null;
+        }
+
         if (["noteOn", "noteOff"].includes(e.subtype)) {
           nanoevents.emit("midichannelevent", e);
         }
