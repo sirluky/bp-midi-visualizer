@@ -25,7 +25,7 @@ export default function DownloadMidiButton({ midiData, midiMeta }: DownloadMidiP
 
   return (
     <div>
-      <button className="bg-green-500 text-white px-4 py-2 rounded-lg mt-3 " onClick={() => download()}>
+      <button className="bg-green-600  px-4 py-2 rounded-lg mt-3 " onClick={() => download()}>
         Stáhnout MIDI
       </button>
     </div>
