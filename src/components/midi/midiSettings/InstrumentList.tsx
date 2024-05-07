@@ -57,7 +57,7 @@ function ChannelList({ channelStates, setChannels, isAnySoloChannelEnabledValue 
               return a[0] - b[0];
           }).map(([channel_id, channel], index) => (
               <tr key={index} className={channel.enabled ? "" : "bg-gray-800 text-gray-300"}>
-                <td className="px-4 py-2 font-semibold">{channel.channel}.</td>
+                <td className="px-4 py-2 font-semibold">{channel.channel + 1}.</td>
                 <td className="px-4 py-2">{channel.instrumentId}</td>
                 <td className="px-4 py-2">
                   {channel.channel === 9 && channel.instrumentId === 0 ? (
