@@ -44,7 +44,7 @@ export function LyricsDisplayKaraoke({ lyrics, midiIndex }: LyricsDisplayProps) 
 
       lineCount = 0;
 
-      while (endIndex < lyrics.length - 1 && lineCount < 2) {
+      while (endIndex < lyrics.length - 1 && lineCount < 3) {
         if (lyrics[endIndex + 1].text === "\n") {
           lineCount++;
         }
