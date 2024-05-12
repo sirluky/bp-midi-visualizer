@@ -4,10 +4,14 @@ import { EndOfTrackEvent, read } from "@/lib/midifile-ts/src/index";
 import { MidiParser } from "~/lib/MidiParser";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
+import { useAtom } from "jotai";
+import { atomWithLocalStorage } from "~/lib/utils";
 
 interface UploadStatus {
   [key: string]: "nahrávání souboru" | "úspěšně nahráno" | "chyba při nahrávání" | "poškozený soubor";
 }
+
+const onlyWithLyricsAtom = atomWithLocalStorage("only-with-lyrics-filter", false);
 
 export default function MidiList() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -18,8 +22,11 @@ export default function MidiList() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [onlyWithLyrics, setOnlyWithLyrics] = useAtom(onlyWithLyricsAtom);
+
   const midiList = trpc.midi.list.useQuery({
     query: searchQuery,
+    onlyWithLyrics: onlyWithLyrics,
   });
 
   const trpcUtils = trpc.useUtils();
@@ -111,6 +118,10 @@ export default function MidiList() {
     }
   };
 
+  const handleOnlyWithLyricsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOnlyWithLyrics(event.target.checked);
+  };
+
   return (
     <div>
       <div className="mb-4 flex justify-between">
@@ -145,6 +156,9 @@ export default function MidiList() {
       )}
 
       <h2 className="mb-4 text-2xl font-bold">Vyhledávání</h2>
+      <label>
+        <input type="checkbox" checked={onlyWithLyrics} onChange={handleOnlyWithLyricsChange} /> Pouze s titulky
+      </label>
       <input
         className="mx-auto block w-full max-w-lg rounded-lg border px-4 py-2 leading-tight text-black focus:outline-none focus:ring"
         type="text"

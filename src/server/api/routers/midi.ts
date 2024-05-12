@@ -1,5 +1,5 @@
 import { inferRouterOutputs } from "@trpc/server";
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, ne, sql } from "drizzle-orm";
 import { type } from "os";
 import { z } from "zod";
 import { prepareMidiFromCloud } from "~/pages/play/[id]";
@@ -37,10 +37,22 @@ export const midiRouter = createTRPCRouter({
     .input(
       z.object({
         query: z.string().optional(),
+        onlyWithLyrics: z.boolean().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
       if (!input.query) {
+        if (input.onlyWithLyrics) {
+          return await ctx.db
+            .select({
+              id: midis.id,
+              name: midis.name,
+            })
+            .from(midis)
+            .where(and(eq(midis.userId, ctx.session.user.id), ne(midis.text, "")))
+            .orderBy(asc(midis.name));
+        }
+
         return await ctx.db
           .select({
             id: midis.id,
