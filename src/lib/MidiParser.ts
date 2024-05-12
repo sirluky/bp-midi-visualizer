@@ -42,11 +42,23 @@ export class MidiParser {
             if (event.type === "meta") {
               switch (event.subtype) {
                 case "lyrics":
-                  const text = event.text.replace("\r", "\n");
-                  lyrics.push({ text, index: eventIndex, trackIndex });
+                  {
+                    const text = event.text.replace("\r", "\n");
+                    lyrics.push({ text, index: eventIndex, trackIndex });
+                  }
                   break;
                 case "text":
-                  introText.push(event.text);
+                  {
+                    const text = event.text.replace("@T", "\n\n").replace("@", "\n").replace("\\", "\n\n").replace("/", "\n");
+                    const splitText = text.split("\n");
+                    splitText.forEach((text, index) => {
+                      if (text) {
+                        lyrics.push({ text, index: eventIndex, trackIndex });
+                      } else {
+                        lyrics.push({ text: "\n", index: eventIndex, trackIndex });
+                      }
+                    });
+                  }
                   break;
                 default:
                   break;
@@ -60,6 +72,7 @@ export class MidiParser {
         });
       };
 
+      console.log({ lyrics });
       addIndexToEvents(parsedMidi!);
 
       const data = {
