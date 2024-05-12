@@ -29,6 +29,7 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
         <title>Karaoke Midi přehrávač s vizualizací</title>
         <meta name="description" content="Karaoke MIDI přehrávač s vizualizací na světlech, vytvořeno v rámci bakalářské práce" />
         <link rel="icon" type="image/png" href="/favicon.png" />
+        <meta property="og:locale" content="cs_CZ" />
       </Head>
       <SessionProvider session={session}>
         <LukyAppProvider>
