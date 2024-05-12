@@ -154,8 +154,10 @@ export class MIDIPlayer {
             // convert to bpm
             nanoevents.emit("bpm-change", this.tempo);
             break;
+          // we could update index always but it's not necessary and more performant
           case "lyrics":
-            // we could update index always but it's not necessary and more performant
+            nanoevents.emit("midi-index-change", e.index);
+          case "text":
             nanoevents.emit("midi-index-change", e.index);
             break;
           default:
