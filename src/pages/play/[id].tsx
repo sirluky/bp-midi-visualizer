@@ -17,10 +17,7 @@ const QueryOnceParameters = {
 export default function PlayId() {
   const router = useRouter();
 
-  const midi = trpc.midi.get.useQuery(
-    { id: Number(router.query.id) },
-    { enabled: !!router.query.id, ...QueryOnceParameters },
-  );
+  const midi = trpc.midi.get.useQuery({ id: Number(router.query.id) }, { enabled: !!router.query.id, ...QueryOnceParameters });
 
   if (midi.error) {
     return <div>{midi.error.message}</div>;
