@@ -20,7 +20,7 @@ import PreviewButton from "~/lib/SpectodaPreview";
 
 let playMidi: (midi: MidiFile) => void;
 
-const soundfontsArray = ["A320U.sf2", "TimGM6mb.sf2"];
+const soundfontsArray = ["A320U.sf2", "GeneralUser GS SoftSynth v1.44.sf2", "SGM-V2.01.sf2", "chorium.sf2", "FluidR3_GM.sf2", "Roland SC-55.sf2", "TimGM6mb.sf2", "gm dls remastered version 2.1.sf2"];
 
 function SoundFontPicker({ setup, loadProgress }: { setup: any; loadProgress: number }) {
   const [soundfonts, setSoundfonts] = useState<string[]>(soundfontsArray);
