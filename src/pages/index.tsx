@@ -53,7 +53,6 @@ export default function MidiList() {
         try {
           const arrayBuffer = reader.result as ArrayBuffer;
           const midiData = new Uint8Array(arrayBuffer);
-          const midi = read(midiData);
           let parsedMidi;
           try {
             parsedMidi = MidiParser.parse(midiData);
