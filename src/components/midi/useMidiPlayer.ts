@@ -141,20 +141,6 @@ export const useMidiPlayer = () => {
     }
   };
 
-  // const setupMIDIInput = async () => {
-  //   if (navigator.requestMIDIAccess) {
-  //     const midiAccess = await navigator.requestMIDIAccess({ sysex: false });
-  //     midiAccess.inputs.forEach((entry: WebMidi.MIDIInput) => {
-  //       entry.onmidimessage = (event: WebMidi.MIDIMessageEvent) => {
-  //         const e = deserialize(new Stream(event.data), 0, () => {});
-  //         if ("channel" in e) {
-  //           postSynthMessage({ type: "midi", midi: e, delayTime: 0 });
-  //         }
-  //       };
-  //     });
-  //   }
-  // };
-
   const setup = async (soundfonturl = defaultSoundFont) => {
     await setupSynth();
     loadSoundFont(soundfonturl);

@@ -8,7 +8,6 @@ export class MIDIOutputProcessor {
 
   constructor() {
     this.initializeMIDI();
-    setInterval(this.flushMIDIOutputBuffer.bind(this), 1000 / 3);
   }
 
   private async initializeMIDI() {
@@ -42,63 +41,11 @@ export class MIDIOutputProcessor {
   }
 
   public processMIDIEvent(event: SynthEvent) {
-    if (this.midiOutput && event.type === "midi") {
-      const midi = event.midi;
+    const ev = { ...event.midi, deltaTime: 0 } as AnyEvent;
+    const midi = serialize(ev, false);
 
-      switch (midi.subtype) {
-        case "noteOn":
-          this.midiOutputBuffer.push(
-            0x90 + midi.channel,
-            midi.noteNumber,
-            midi.velocity,
-          );
-          break;
-        case "noteOff":
-          this.midiOutputBuffer.push(
-            0x80 + midi.channel,
-            midi.noteNumber,
-            midi.velocity,
-          );
-          break;
-        case "controller":
-          this.midiOutputBuffer.push(
-            0xb0 + midi.channel,
-            midi.controllerType,
-            midi.value,
-          );
-          break;
-        case "programChange":
-          this.midiOutputBuffer.push(0xc0 + midi.channel, midi.value);
-          break;
-        case "pitchBend":
-          const pitchBendValue = (midi.value + 8192) & 0x7f;
-          const pitchBendLSB = pitchBendValue & 0x7f;
-          const pitchBendMSB = (pitchBendValue >> 7) & 0x7f;
-          this.midiOutputBuffer.push(
-            0xe0 + midi.channel,
-            pitchBendLSB,
-            pitchBendMSB,
-          );
-          break;
-        case "channelAftertouch":
-          this.midiOutputBuffer.push(0xd0 + midi.channel, midi.amount);
-          break;
-        case "noteAftertouch":
-          this.midiOutputBuffer.push(
-            0xa0 + midi.channel,
-            midi.noteNumber,
-            midi.amount,
-          );
-          break;
-        // Add more cases for other MIDI event types as needed
-      }
-    }
-  }
-
-  private flushMIDIOutputBuffer() {
-    if (this.midiOutput && this.midiOutputBuffer.length > 0) {
-      this.midiOutput.send(this.midiOutputBuffer);
-      this.midiOutputBuffer = [];
+    if (this.midiOutput && event.type !== "loadSample" && midi.length > 1) {
+      this.midiOutput.send(midi);
     }
   }
 }
