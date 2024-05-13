@@ -1,6 +1,5 @@
 import { SynthEvent } from "@ryohey/wavelet";
-import { serialize } from "~/lib/midifile-ts/src";
-import { TIMER_INTERVAL } from "~/lib/wavelet/example/src/MIDIPlayer";
+import { AnyEvent, serialize } from "@/lib/midifile-ts";
 
 export class MIDIOutputProcessor {
   private midiAccess: WebMidi.MIDIAccess | null = null;
@@ -9,7 +8,7 @@ export class MIDIOutputProcessor {
 
   constructor() {
     this.initializeMIDI();
-    setInterval(this.flushMIDIOutputBuffer.bind(this), TIMER_INTERVAL / 3);
+    setInterval(this.flushMIDIOutputBuffer.bind(this), 1000 / 3);
   }
 
   private async initializeMIDI() {

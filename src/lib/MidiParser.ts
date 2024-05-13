@@ -1,5 +1,5 @@
 import { read } from "@/lib/midifile-ts/src/index";
-import { AnyEvent, MidiFile } from "midifile-ts";
+import { AnyEvent, MidiFile } from "@/lib/midifile-ts";
 import { calculateTotalTime } from "~/components/midi/player/MIDIPlayer";
 
 interface Instrument {
@@ -30,7 +30,7 @@ export class MidiParser {
       const instruments: InstrumentWithIndex[] = [];
       let endEvent = null;
 
-      const parsedMidi = read(midiData);
+      const parsedMidi = read(midiData, "windows-1250");
 
       const addIndexToEvents = (midi: MidiFile) => {
         midi.tracks.forEach((track, trackIndex) => {

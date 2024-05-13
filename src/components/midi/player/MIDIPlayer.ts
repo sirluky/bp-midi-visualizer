@@ -1,5 +1,5 @@
 import { SynthEvent } from "@ryohey/wavelet";
-import { AnyEvent, EndOfTrackEvent, MIDIControlEvents, MidiFile } from "midifile-ts";
+import { AnyEvent, EndOfTrackEvent, MIDIControlEvents, MidiFile } from "@/lib/midifile-ts";
 import { useMidiStore } from "../midiSettings/midiSettingsStore";
 import { nanoevents } from "../utils";
 import EventScheduler from "./EventScheduler";

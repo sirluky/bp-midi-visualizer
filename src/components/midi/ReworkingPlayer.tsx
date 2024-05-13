@@ -15,7 +15,7 @@ import { AnyEventWithIndex } from "~/lib/MidiParser";
 import { useSpectodaConnection } from "~/lib/useSpectodaConnection";
 import { useAtom } from "jotai";
 import { trpc } from "~/utils/api";
-import { AnyChannelEvent, AnyEvent } from "midifile-ts";
+import { AnyChannelEvent, AnyEvent } from "@/lib/midifile-ts";
 import PreviewButton from "~/lib/SpectodaPreview";
 
 let playMidi: (midi: MidiFile) => void;
