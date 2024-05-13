@@ -63,7 +63,7 @@ export const midiRouter = createTRPCRouter({
           .orderBy(asc(midis.name));
       }
 
-      const MIDI_QUERY_SQL = sql`SELECT id, name FROM fuzzy_search_midi(${input.query}) fsm WHERE userId = ${ctx.session.user.id} ${input.onlyWithLyrics ? sql.raw("AND text != ''") : ""} ORDER BY name ASC`;
+      const MIDI_QUERY_SQL = sql`SELECT id, name FROM fuzzy_search_midi(${input.query}) fsm WHERE userId = ${ctx.session.user.id} ${input.onlyWithLyrics ? sql.raw("AND text != ''") : sql.raw("")} ORDER BY name ASC`;
 
       const midiList = (await ctx.db.execute(MIDI_QUERY_SQL)) as Midi[];
       return midiList;
