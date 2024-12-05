@@ -110,7 +110,7 @@ export default function MidiList() {
           Otevřít demo přehrávač
         </Link>
         <button className="btn btn-primary" onClick={() => setIsUploadOpen(!isUploadOpen)}>
-          {isUploadOpen ? "Zavřít Nahrávací menu" : "Nahrát MIDI Soubory"}
+          {isUploadOpen ? "Zavřít nahrávací menu" : "Nahrát MIDI soubory"}
         </button>
       </div>
       {isUploadOpen && (
@@ -142,7 +142,7 @@ export default function MidiList() {
         placeholder="Zadejte část názvu/obsahu skladby.."
       />
 
-      {midiList.data && midiList.data.length === 0 && <div className="mt-4 text-center mb-4">Žádne MIDI nenalezeno. Přidejte je skrze "Nahrát MIDI Soubory" nebo si spusťe ukázku skrze "Otevřít demo přehrávač"</div>}
+      {midiList.data && midiList.data.length === 0 && <div className="mt-4 text-center mb-4">Žádné MIDI nenalezeno. Přidejte je skrze "Nahrát MIDI soubory" nebo si spusťte ukázku skrze "Otevřít demo přehrávač"</div>}
 
       {midiList.isLoading && <div className="mt-4 text-center">Filtrování...</div>}
       {midiList.error && <div className="mt-4 text-center">Načítání seznamu MIDI selhalo. Zkuste to prosím znovu.</div>}
@@ -209,7 +209,7 @@ function FileUploadButton({ onChange }: FileUploadButtonProps) {
   return (
     <div>
       <input type="file" multiple accept=".mid,.midi,.kar" ref={fileInputRef} onChange={onChange} className="hidden" />
-      <p>Zde vyberte MIDI soubory z vašeho disku, které chcete přidat do vašeho účtu.</p>
+      <p>Zde vyberte MIDI soubory ze svého disku, které si chcete přidat do účtu.</p>
       <button onClick={handleClick} className="btn btn-primary mt-3">
         Vybrat Soubory
       </button>

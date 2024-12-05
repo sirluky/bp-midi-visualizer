@@ -22,7 +22,7 @@ export function SpectodaVisualization() {
 
   return (
     <div className="flex items-center justify-end my-4">
-      <div className="text-sm font-semibold mr-3">Máte Spectoda zařízení? </div>
+      <div className="text-sm font-semibold mr-3">Máte zařízení Spectoda?</div>
       <button
         className={`btn ${isConnectedAndNotDummy ? "btn-error" : "btn-primary"} px-4 py-2 rounded-md`}
         onClick={() => {
