@@ -10,6 +10,8 @@ import { useMidiStore } from "./midiSettings/midiSettingsStore";
 import { useAtom } from "jotai";
 import { isWebMidiEnabledAtom } from "./useMidiPlayer";
 import Head from "next/head";
+import DownloadMidiButton from "./player/DownloadMidiButton";
+
 interface PlayerProps {
   midi: GetMidiOutput;
 }
@@ -57,8 +59,14 @@ export function Player({ midi }: PlayerProps) {
         <span className="invisible">č</span>
       </h2>
 
+      {midiData && <DownloadMidiButton midiData={midiData} midiMeta={midi} />}
       {midiData && <ReworkingPlayer config={midiConfig} parsedMidi={midiData?.data} totalTime={midiData?.totalTime} />}
-
+      {midiData?.introText && midiData.introText.length > 0 && (
+        <details className="text-gray-300">
+          <summary className="text-xl font-bold mt-5 cursor-pointer">Úvodní text:</summary>
+          <pre>{midiData?.introText}</pre>
+        </details>
+      )}
       {midiData?.lyrics && midiData?.lyrics.length > 0 ? (
         <LyricsIndexProvider>{midiIndex => <LyricsDisplayKaraoke midiIndex={midiIndex} lyrics={midiData.lyrics} />}</LyricsIndexProvider>
       ) : (

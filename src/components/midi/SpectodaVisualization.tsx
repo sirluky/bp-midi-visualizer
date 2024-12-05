@@ -22,7 +22,13 @@ export function SpectodaVisualization() {
 
   return (
     <div className="flex items-center justify-end my-4">
-      <div className="text-sm font-semibold mr-3">Máte zařízení Spectoda?</div>
+      <div className="text-sm font-semibold mr-3">
+        <a target="_blank" className="link link-warning" href="https://www.youtube.com/watch?v=XKk45uFF5Ko&list=PL7Gxu53zUlh-qLVrsfN4_oXuzPAwIRywM&index=1">
+          Video ukázky zde
+        </a>
+        <br />
+        Máte Spectoda zařízení?
+      </div>
       <button
         className={`btn ${isConnectedAndNotDummy ? "btn-error" : "btn-primary"} px-4 py-2 rounded-md`}
         onClick={() => {

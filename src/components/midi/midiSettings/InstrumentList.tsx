@@ -53,52 +53,52 @@ function ChannelList({ channelStates, setChannels, isAnySoloChannelEnabledValue 
         </thead>
         <tbody>
           {Array.from(channelStates).sort((a,b)=> {
-            // order by channel number
-            return a[0] - b[0];
+              // order by channel number
+              return a[0] - b[0];
           }).map(([channel_id, channel], index) => (
-            <tr key={index} className={channel.enabled ? "" : "bg-gray-800 text-gray-300"}>
-              <td className="px-4 py-2 font-semibold">{channel.channel}.</td>
-              <td className="px-4 py-2">{channel.instrumentId}</td>
-              <td className="px-4 py-2">
-                {channel.channel === 9 && channel.instrumentId === 0 ? (
-                  <>Standardní bicí souprava</>
-                ) : (
-                  <>
-                    <InstrumentName programNumber={channel.instrumentId} />
-                  </>
-                )}
-              </td>
-              <td className="px-4 py-2">
-                <button
-                  onClick={() =>
-                    setChannels(channel_id, {
-                      ...channel,
-                      enabled: !channel.enabled,
-                    })
-                  }
-                  className={`rounded px-2 py-1 ${channel.enabled ? "bg-green-500 dark:text-white" : "bg-red-500 dark:text-white"} ${!isAnySoloChannelEnabledValue ? "" : !channel.solo ? "pointer-events-none !bg-gray-700" : ""}`}
-                >
-                  {channel.enabled ? "Zap" : "Vyp"}
-                </button>
-              </td>
-              <td className="px-4 py-2">
-                <button
-                  onClick={() =>
-                    setChannels(channel_id, {
-                      ...channel,
-                      solo: !channel.solo,
-                    })
-                  }
-                  className={`rounded px-2 py-1 ${channel.solo ? "bg-blue-500 dark:text-white" : "bg-gray-500 dark:text-white"}`}
-                >
-                  {channel.solo ? "O" : "X"}
-                </button>
-              </td>
-              <td className="flex items-center justify-center">
-                <InstrumentPulser channelId={channel.channel} enabled={isAnySoloChannelEnabledValue ? channel.solo : channel.enabled} />
-              </td>
-            </tr>
-          ))}
+              <tr key={index} className={channel.enabled ? "" : "bg-gray-800 text-gray-300"}>
+                <td className="px-4 py-2 font-semibold">{channel.channel + 1}.</td>
+                <td className="px-4 py-2">{channel.instrumentId}</td>
+                <td className="px-4 py-2">
+                  {channel.channel === 9 && channel.instrumentId === 0 ? (
+                    <>Standardní bicí souprava</>
+                  ) : (
+                    <>
+                      <InstrumentName programNumber={channel.instrumentId} />
+                    </>
+                  )}
+                </td>
+                <td className="px-4 py-2">
+                  <button
+                    onClick={() =>
+                      setChannels(channel_id, {
+                        ...channel,
+                        enabled: !channel.enabled,
+                      })
+                    }
+                    className={`rounded px-2 py-1 ${channel.enabled ? "bg-green-600 dark:text-white" : "bg-red-500 dark:text-white"} ${!isAnySoloChannelEnabledValue ? "" : !channel.solo ? "pointer-events-none !bg-gray-700" : ""}`}
+                  >
+                    {channel.enabled ? "Zap" : "Vyp"}
+                  </button>
+                </td>
+                <td className="px-4 py-2">
+                  <button
+                    onClick={() =>
+                      setChannels(channel_id, {
+                        ...channel,
+                        solo: !channel.solo,
+                      })
+                    }
+                    className={`rounded px-2 py-1 ${channel.solo ? "bg-blue-500 dark:text-white" : "bg-gray-500 dark:text-white"}`}
+                  >
+                    {channel.solo ? "O" : "X"}
+                  </button>
+                </td>
+                <td className="flex items-center justify-center">
+                  <InstrumentPulser channelId={channel.channel} enabled={isAnySoloChannelEnabledValue ? channel.solo : channel.enabled} />
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

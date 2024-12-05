@@ -32,7 +32,7 @@ function SoundFontPicker({ setup, loadProgress }: { setup: any; loadProgress: nu
   }
 
   return (
-    <div className="mb-4 flex flex-col items-center">
+    <div className="mb-4 mt-3 flex flex-col items-center">
       <p className="font-bold dark:text-white">Výběr soundfontu</p>
       <select className="rounded-lg border bg-white px-4 py-2 leading-tight text-black focus:outline-none focus:ring dark:bg-gray-700 dark:text-white" value={selectedSoundfont} onChange={e => setSoundFont(e.target.value)}>
         {soundfonts.map(soundfont => (
@@ -45,7 +45,7 @@ function SoundFontPicker({ setup, loadProgress }: { setup: any; loadProgress: nu
         <div className="mt-2 flex w-full justify-center rounded-lg bg-gray-100 p-2 dark:bg-gray-700">
           <div className="flex items-center space-x-2">
             <div className="max-w-sm w-full bg-gray-200 dark:bg-gray-500">
-              <div className="h-2 rounded-lg bg-green-500" style={{ width: `${loadProgress}%` }}></div>
+              <div className="h-2 rounded-lg bg-green-600" style={{ width: `${loadProgress}%` }}></div>
             </div>
             <span className="text-sm text-gray-700 dark:text-white">Načítání zvukového fontu</span>
           </div>
