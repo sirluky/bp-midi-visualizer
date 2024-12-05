@@ -29,7 +29,6 @@ export function SpectodaVisualization() {
         <br />
         Máte Spectoda zařízení?
       </div>
-
       <button
         className={`btn ${isConnectedAndNotDummy ? "btn-error" : "btn-primary"} px-4 py-2 rounded-md`}
         onClick={() => {

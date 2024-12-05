@@ -51,7 +51,7 @@ export function Player({ midi }: PlayerProps) {
   return (
     <div className="mx-auto max-w-4xl">
       <Head>
-        <title>{midi.name} - Karaoke Midi přehrávač s vizualizací</title>
+        <title>{midi.name} - Karaoke MIDI přehrávač s vizualizací</title>
       </Head>
 
       <h2 className="mt-4 text-3xl font-bold">
@@ -70,7 +70,7 @@ export function Player({ midi }: PlayerProps) {
       {midiData?.lyrics && midiData?.lyrics.length > 0 ? (
         <LyricsIndexProvider>{midiIndex => <LyricsDisplayKaraoke midiIndex={midiIndex} lyrics={midiData.lyrics} />}</LyricsIndexProvider>
       ) : (
-        <p className="text-gray-500">Tato skladba neobsahuje titulky.</p>
+        <p className="text-gray-500">Tato skladba neobsahuje text.</p>
       )}
       <div className="mt-4">
         <input
@@ -78,7 +78,7 @@ export function Player({ midi }: PlayerProps) {
           id="webMidi"
           checked={isWebMidiEnabled}
           onChange={e => {
-            if (!isWebMidiEnabled && !confirm("Chcete povolit WebMIDI? Zkontrolujte si zda máte v PC nainstalovaný synthetizer či připojené externí MIDI zařízení")) {
+            if (!isWebMidiEnabled && !confirm("Chcete povolit WebMIDI? Zkontrolujte si zda máte v PC nainstalovaný syntezátor či připojené externí MIDI zařízení")) {
               return;
             }
             setIsWebMidiEnabled(e.target.checked);
@@ -87,7 +87,7 @@ export function Player({ midi }: PlayerProps) {
           className="mr-2"
         />
         <label htmlFor="webMidi" className="">
-          Použití externího MIDI Synthetizéru - {isWebMidiEnabled ? "zapnuto (používá se WebMidi)" : "vypnuto (používá se simulovaný syntetizér)"}
+          Použití externího MIDI syntezátoru - {isWebMidiEnabled ? "zapnuto (používá se WebMidi)" : "vypnuto (používá se simulovaný syntezátor)"}
         </label>
       </div>
     </div>
