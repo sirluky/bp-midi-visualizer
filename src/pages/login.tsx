@@ -1,6 +1,6 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,7 +10,7 @@ export default function LoginPage() {
   };
 
   const handleSignInWithEmail = () => {
-    signIn("email", { email });
+    void signIn("email", { email });
   };
 
   return (
@@ -61,7 +61,7 @@ function EmailIcon({ className = "", color = "#fff" }: { className?: string; col
   );
 }
 
-function DiscordIcon({ className = "", color = "#fff" }: { className?: string; color?: string }) {
+function DiscordIcon({ className = "", color: _color = "#fff" }: { className?: string; color?: string }) {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
       <path
@@ -72,7 +72,7 @@ function DiscordIcon({ className = "", color = "#fff" }: { className?: string; c
   );
 }
 
-function GoogleIcon({ className = "", color = "#fff" }: { className?: string; color?: string }) {
+function GoogleIcon({ className = "", color: _color = "#fff" }: { className?: string; color?: string }) {
   return (
     <svg className={className} fill={color} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
       <path

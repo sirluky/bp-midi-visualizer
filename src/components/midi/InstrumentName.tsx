@@ -262,7 +262,7 @@ export const InstrumentName: FC<{ programNumber: number | undefined }> = ({ prog
   return <></>;
 };
 
-function Localized({ children, default: defaultValue }: { children: string; default: string }) {
+function Localized({ children, default: _defaultValue }: { children: string; default: string }) {
   return <>{children}</>;
 }
 
