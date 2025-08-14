@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useRef, useState } from "react";
+import { type ChangeEventHandler, useRef, useState } from "react";
 import { trpc } from "~/utils/api";
 import { EndOfTrackEvent, read } from "@/lib/midifile-ts/src/index";
 import { MidiParser } from "~/lib/MidiParser";

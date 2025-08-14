@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MidiParser } from "~/lib/MidiParser";
-import { GetMidiOutput } from "~/server/api/routers/midi";
+import { type GetMidiOutput } from "~/server/api/routers/midi";
 import ReworkingPlayer from "./ReworkingPlayer";
 import { nanoevents } from "./utils";
 import { LyricsDisplayKaraoke } from "./Lyrics";
-import { calculateTotalTime } from "./player/MIDIPlayer";
 import { trpc } from "~/utils/api";
 import { useMidiStore } from "./midiSettings/midiSettingsStore";
 import { useAtom } from "jotai";
@@ -32,8 +31,8 @@ export function Player({ midi }: PlayerProps) {
     if (parsedMidi) {
       useMidiStore.getState().clearChannels();
 
-      for (let instrument of parsedMidi.instruments) {
-        let setChannels = useMidiStore.getState().setChannels;
+      for (const instrument of parsedMidi.instruments) {
+        const setChannels = useMidiStore.getState().setChannels;
         setChannels(instrument.channel, {
           channel: instrument.channel,
           enabled: true,
@@ -98,7 +97,7 @@ function LyricsIndexProvider({ children }: { children: (index: number) => React.
   const [midiIndex, setMidiIndex] = useState(0);
 
   useEffect(() => {
-    let ev = nanoevents.on("midi-index-change", (index: number) => {
+    const ev = nanoevents.on("midi-index-change", (index: number) => {
       setMidiIndex(index);
     });
 

@@ -1,5 +1,5 @@
-import { MidiFile } from "~/lib/midifile-ts/src";
-import { Spectoda } from "~/lib/spectoda-js/Spectoda";
+import { type MidiFile } from "~/lib/midifile-ts/src";
+import { type Spectoda } from "~/lib/spectoda-js/Spectoda";
 
 declare global {
   interface Window {

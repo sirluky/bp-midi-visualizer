@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { type FC } from "react";
 
 export const InstrumentName: FC<{ programNumber: number | undefined }> = ({ programNumber }) => {
   switch (programNumber) {

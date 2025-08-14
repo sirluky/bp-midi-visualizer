@@ -1,4 +1,4 @@
-import { inferRouterOutputs } from "@trpc/server";
+import { type inferRouterOutputs } from "@trpc/server";
 import { and, asc, eq, ne, sql } from "drizzle-orm";
 import { type } from "os";
 import { z } from "zod";
@@ -7,7 +7,7 @@ import { prepareMidiFromCloud } from "~/pages/play/[id]";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import { midis, midisConfig } from "~/server/db/schema";
-import { Midi } from "~/types/dbTypes";
+import { type Midi } from "~/types/dbTypes";
 
 export const midiRouter = createTRPCRouter({
   upload: protectedProcedure

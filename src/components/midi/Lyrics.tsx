@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { nanoevents } from "./utils";
-import { LyricsWithIndex } from "~/lib/MidiParser";
+import { type LyricsWithIndex } from "~/lib/MidiParser";
 import { cn } from "~/lib/utils";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
@@ -74,7 +72,7 @@ export function LyricsDisplayKaraoke({ lyrics, midiIndex }: LyricsDisplayProps) 
         <button
           className="absolute top-4 right-4 px-4 py-2  text-white rounded"
           onClick={() => {
-            handle.exit();
+            void handle.exit();
           }}
         >
           <ExitIcon />
@@ -86,7 +84,7 @@ export function LyricsDisplayKaraoke({ lyrics, midiIndex }: LyricsDisplayProps) 
   return (
     <>
       {lyrics?.length > 10 && (
-        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded" onClick={() => handle.enter()}>
+        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded" onClick={() => void handle.enter()}>
           {handle.active ? "Zavřít" : "Přepnout na celou obrazovku"}
         </button>
       )}
