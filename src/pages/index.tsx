@@ -1,6 +1,5 @@
 import { type ChangeEventHandler, useRef, useState } from "react";
 import { trpc } from "~/utils/api";
-import { read } from "@/lib/midifile-ts/src/index";
 import { MidiParser } from "~/lib/MidiParser";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
@@ -164,7 +163,7 @@ export default function MidiList() {
         placeholder="Zadejte část názvu/obsahu skladby.."
       />
 
-      {midiList.data && midiList.data.length === 0 && <div className="mt-4 text-center mb-4">Žádné MIDI nenalezeno. Přidejte je skrze "Nahrát MIDI soubory" nebo si spusťte ukázku skrze "Otevřít demo přehrávač"</div>}
+      {midiList.data && midiList.data.length === 0 && <div className="mt-4 text-center mb-4">Žádné MIDI nenalezeno. Přidejte je skrze &quot;Nahrát MIDI soubory&quot; nebo si spusťte ukázku skrze &quot;Otevřít demo přehrávač&quot;</div>}
 
       {midiList.isLoading && <div className="mt-4 text-center">Filtrování...</div>}
       {midiList.error && <div className="mt-4 text-center">Načítání seznamu MIDI selhalo. Zkuste to prosím znovu.</div>}
