@@ -1,10 +1,8 @@
 import React, { useRef, useState } from "react";
-import SimplePlayer from "~/components/midi/SimplePlayer";
 import { MidiParser } from "~/lib/MidiParser";
-import { GetMidiOutput } from "~/server/api/routers/midi";
+import { type GetMidiOutput } from "~/server/api/routers/midi";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "~/lib/utils";
-import ReworkingPlayer from "~/components/midi/ReworkingPlayer";
 import { Player } from "~/components/midi/Player";
 import Link from "next/link";
 
@@ -19,7 +17,7 @@ export default function LocalFile() {
     const file = event.target.files?.[0];
     if (file) {
       setFile(file);
-      handleLoadFile(file);
+      void handleLoadFile(file);
     } else {
       toast({
         title: "Nevybrán žádný soubor",
@@ -68,7 +66,7 @@ export default function LocalFile() {
 function prepareMidiFromFile(midi: Uint8Array, file: File): GetMidiOutput {
   const parsedMidi = MidiParser.parse(midi);
 
-  const { introText, lyrics } = parsedMidi || {
+  const { introText, lyrics } = parsedMidi ?? {
     introText: [],
     lyrics: [],
   };

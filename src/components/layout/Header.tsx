@@ -9,7 +9,6 @@ import { themeAtom } from "~/pages/_app";
 export default function Header() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [theme, setTheme] = useAtom(themeAtom);
 
   // If the current route is /login, don't render the header
   if (router.pathname === "/login") {

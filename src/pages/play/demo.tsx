@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Player } from "~/components/midi/Player";
 import { MidiParser } from "~/lib/MidiParser";
-import { GetMidiOutput } from "~/server/api/routers/midi";
+import { type GetMidiOutput } from "~/server/api/routers/midi";
 
 // MIDI examples are from https://bitmidi.com/
 const midiDataExamples = [
@@ -61,7 +61,7 @@ export default function Base64Midi() {
 
 function prepareMidiFromBase64(midi: Uint8Array, name: string): GetMidiOutput {
   const parsedMidi = MidiParser.parse(midi);
-  const { introText, lyrics } = parsedMidi || { introText: [], lyrics: [] };
+  const { introText, lyrics } = parsedMidi ?? { introText: [], lyrics: [] };
   const headerText = introText.join("").trim();
   const plainLyrics = lyrics
     .map(v => v.text)

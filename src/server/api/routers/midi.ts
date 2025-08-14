@@ -1,13 +1,12 @@
-import { inferRouterOutputs } from "@trpc/server";
+import { type inferRouterOutputs } from "@trpc/server";
 import { and, asc, eq, ne, sql } from "drizzle-orm";
-import { type } from "os";
 import { z } from "zod";
 import { prepareMidiFromCloud } from "~/pages/play/[id]";
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import { midis, midisConfig } from "~/server/db/schema";
-import { Midi } from "~/types/dbTypes";
+import { type Midi } from "~/types/dbTypes";
 
 export const midiRouter = createTRPCRouter({
   upload: protectedProcedure
@@ -94,7 +93,7 @@ export const midiRouter = createTRPCRouter({
       where: and(eq(midis.userId, ctx.session.user.id), eq(midis.id, input.id)),
     });
 
-    if (!midi || !midi.midi) {
+    if (!midi?.midi) {
       throw new Error("Midi not found");
     }
 
@@ -115,7 +114,7 @@ export const midiRouter = createTRPCRouter({
     return (
       (await ctx.db.query.midisConfig.findFirst({
         where: and(eq(midisConfig.midiId, input.id)),
-      })) || {}
+      })) ?? {}
     );
   }),
 

@@ -1,5 +1,5 @@
 import { trpc } from "~/utils/api";
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { cn } from "~/lib/utils";
 
@@ -14,7 +14,7 @@ export default function UpdateMidiName({ midiId, currentName }: { midiId: number
     event.preventDefault();
     try {
       await mutateAsync({ id: midiId, name });
-      trpcUtils.midi.invalidate();
+      void trpcUtils.midi.invalidate();
       setIsEditing(false); // Hide the form after successful update
       toast({
         title: "Název MIDI úspěšně aktualizován",

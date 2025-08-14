@@ -15,7 +15,6 @@ import { SpectodaConnectionProvider } from "~/lib/SpectodaConnectionContext";
 import Footer from "~/components/layout/Footer";
 import Head from "next/head";
 import { useAtom } from "jotai";
-import { createPortal } from "react-dom";
 
 export const inter = Inter({
   subsets: ["latin"],

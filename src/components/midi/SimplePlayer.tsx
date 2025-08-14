@@ -1,7 +1,6 @@
 import type { PlayerElement } from "html-midi-player";
 import { useEffect, useMemo, useRef } from "react";
-import { GetMidiOutput } from "~/server/api/routers/midi";
-import type { Midi } from "~/types/dbTypes";
+import { type GetMidiOutput } from "~/server/api/routers/midi";
 
 interface PlayerProps {
   midi: GetMidiOutput;

@@ -1,9 +1,7 @@
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React from "react";
 import { Player } from "~/components/midi/Player";
-import SimplePlayer from "~/components/midi/SimplePlayer";
 import UpdateMidiName from "~/components/midi/UpdateMidiName";
-import { Midi } from "~/types/dbTypes";
 import { trpc } from "~/utils/api";
 
 const QueryOnceParameters = {

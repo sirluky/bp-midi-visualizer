@@ -1,15 +1,12 @@
-import { ChangeEventHandler, useRef, useState } from "react";
+import { type ChangeEventHandler, useRef, useState } from "react";
 import { trpc } from "~/utils/api";
-import { EndOfTrackEvent, read } from "@/lib/midifile-ts/src/index";
 import { MidiParser } from "~/lib/MidiParser";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
 import { useAtom } from "jotai";
 import { atomWithLocalStorage } from "~/lib/utils";
 
-interface UploadStatus {
-  [key: string]: "nahrávání souboru" | "úspěšně nahráno" | "chyba při nahrávání" | "poškozený soubor";
-}
+type UploadStatus = Record<string, "nahrávání souboru" | "úspěšně nahráno" | "chyba při nahrávání" | "poškozený soubor">;
 
 const onlyWithLyricsAtom = atomWithLocalStorage("only-with-lyrics-filter", false);
 
@@ -53,7 +50,6 @@ export default function MidiList() {
         try {
           const arrayBuffer = reader.result as ArrayBuffer;
           const midiData = new Uint8Array(arrayBuffer);
-          const midi = read(midiData);
           let parsedMidi;
           try {
             parsedMidi = MidiParser.parse(midiData);
@@ -66,7 +62,7 @@ export default function MidiList() {
             return;
           }
 
-          const { introText, lyrics } = parsedMidi || {
+          const { introText, lyrics } = parsedMidi ?? {
             introText: [],
             lyrics: [],
           };
@@ -142,7 +138,7 @@ export default function MidiList() {
             {files.map(file => (
               <li key={file.name} className="flex items-center justify-between">
                 <span>{file.name}</span>
-                <span>{uploadStatus[file.name] || "Připraveno k nahrání"}</span>{" "}
+                <span>{uploadStatus[file.name] ?? "Připraveno k nahrání"}</span>{" "}
               </li>
             ))}
           </ul>
@@ -167,7 +163,7 @@ export default function MidiList() {
         placeholder="Zadejte část názvu/obsahu skladby.."
       />
 
-      {midiList.data && midiList.data.length === 0 && <div className="mt-4 text-center mb-4">Žádné MIDI nenalezeno. Přidejte je skrze "Nahrát MIDI soubory" nebo si spusťte ukázku skrze "Otevřít demo přehrávač"</div>}
+      {midiList.data && midiList.data.length === 0 && <div className="mt-4 text-center mb-4">Žádné MIDI nenalezeno. Přidejte je skrze &quot;Nahrát MIDI soubory&quot; nebo si spusťte ukázku skrze &quot;Otevřít demo přehrávač&quot;</div>}
 
       {midiList.isLoading && <div className="mt-4 text-center">Filtrování...</div>}
       {midiList.error && <div className="mt-4 text-center">Načítání seznamu MIDI selhalo. Zkuste to prosím znovu.</div>}

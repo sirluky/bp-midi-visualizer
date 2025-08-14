@@ -1,29 +1,24 @@
-import { MidiFile, read } from "@/lib/midifile-ts/src/index";
-import { spectoda } from "@/lib/communication";
-
-import { ChangeEventHandler, use, useEffect, useMemo, useState } from "react";
+import { type MidiFile } from "@/lib/midifile-ts/src/index";
+import { useEffect, useState } from "react";
 // import { midiIdAtom } from "../Search";
 // import { downloadMidi, formatTime } from "../utils";
 import InstrumentList from "./midiSettings/InstrumentList";
-import { MIDIPlayer, Tick } from "./player/MIDIPlayer";
+import { type MIDIPlayer, type Tick } from "./player/MIDIPlayer";
 import { isWebMidiEnabledAtom, useMidiPlayer } from "./useMidiPlayer";
 import { formatTime, nanoevents } from "./utils";
-import { MIDIEvent, SynthEvent } from "@ryohey/wavelet";
-import { NoteOffEvent } from "~/lib/midifile-ts/dist";
+
 import { PlayPauseButton, StopButton } from "./player/Buttons";
-import { AnyEventWithIndex } from "~/lib/MidiParser";
-import { useSpectodaConnection } from "~/lib/useSpectodaConnection";
+
 import { useAtom } from "jotai";
-import { trpc } from "~/utils/api";
-import { AnyChannelEvent, AnyEvent } from "midifile-ts";
+
+import { type AnyEvent } from "midifile-ts";
 import PreviewButton from "~/lib/SpectodaPreview";
 
-let playMidi: (midi: MidiFile) => void;
 
 const soundfontsArray = ["A320U.sf2", "TimGM6mb.sf2"];
 
-function SoundFontPicker({ setup, loadProgress }: { setup: any; loadProgress: number }) {
-  const [soundfonts, setSoundfonts] = useState<string[]>(soundfontsArray);
+function SoundFontPicker({ setup, loadProgress }: { setup: (value: string) => void; loadProgress: number }) {
+  const [soundfonts] = useState<string[]>(soundfontsArray);
   const [selectedSoundfont, setSelectedSoundfont] = useState<string>("");
 
   function setSoundFont(value: string) {
@@ -58,7 +53,7 @@ function SoundFontPicker({ setup, loadProgress }: { setup: any; loadProgress: nu
 export default function ReworkingPlayer({
   parsedMidi,
   totalTime,
-  config,
+  config: _config,
 }: {
   parsedMidi: MidiFile;
   totalTime: number;
@@ -66,7 +61,7 @@ export default function ReworkingPlayer({
   config: unknown;
 }) {
   const { playMIDI, pauseMIDI, stopMIDI, midiPlayer, setup, loadProgress, isPlaying, isStopped } = useMidiPlayer();
-  const [isWebMidiEnabled, setIsWebMidiEnabled] = useAtom(isWebMidiEnabledAtom);
+  const [isWebMidiEnabled] = useAtom(isWebMidiEnabledAtom);
 
   const handlePlayPause = () => {
     if (isPlaying) {
@@ -101,11 +96,7 @@ export default function ReworkingPlayer({
   );
 }
 
-let timeobj = {
-  time: 0,
-};
 
-let timeout: any;
 function Time({ midiPlayer, totalTime }: { midiPlayer: MIDIPlayer; totalTime: number }) {
   const [time, setTime] = useState(0);
 
@@ -113,7 +104,6 @@ function Time({ midiPlayer, totalTime }: { midiPlayer: MIDIPlayer; totalTime: nu
     if (midiPlayer) {
       midiPlayer.onProgress = progress => {
         setTime(progress);
-        timeobj = { time: progress };
       };
     }
   }, [midiPlayer]);
