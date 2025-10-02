@@ -17,9 +17,14 @@ interface PlayerProps {
 }
 
 export function Player({ midi }: PlayerProps) {
-  const { data: midiConfig } = trpc.midi.getMidiConfig.useQuery({
-    id: midi.id,
-  });
+  const { data: midiConfig } = trpc.midi.getMidiConfig.useQuery(
+    {
+      id: midi.id,
+    },
+    {
+      enabled: midi.id > 0,
+    },
+  );
 
   useEffect(() => {
     if (midiConfig) {

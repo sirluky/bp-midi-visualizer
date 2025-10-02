@@ -1,5 +1,5 @@
 import { SynthEvent } from "@ryohey/wavelet";
-import { AnyEvent, EndOfTrackEvent, MIDIControlEvents, MidiFile } from "midifile-ts";
+import { AnyEvent, EndOfTrackEvent, MIDIControlEvents, MidiFile } from "@/lib/midifile-ts";
 import { useMidiStore } from "../midiSettings/midiSettingsStore";
 import { nanoevents } from "../utils";
 import EventScheduler from "./EventScheduler";
@@ -21,8 +21,8 @@ function addTick(events: AnyEvent[], track: number): (AnyEvent & Tick)[] {
 
 export const isEndOfTrackEvent = (e: AnyEvent): e is EndOfTrackEvent => "subtype" in e && e.subtype === "endOfTrack";
 
-const TIMER_INTERVAL = 100;
-const LOOK_AHEAD_TIME = 50;
+const TIMER_INTERVAL = typeof window !== "undefined" && localStorage.getItem("isWebMidiEnabled") === "true" ? 20 : 100;
+const LOOK_AHEAD_TIME = typeof window !== "undefined" && localStorage.getItem("isWebMidiEnabled") === "true" ? 30 : 50;
 
 export class MIDIPlayer {
   private output: (e: SynthEvent) => void;

@@ -1,5 +1,5 @@
 import { SynthEvent, getSamplesFromSoundFont } from "@ryohey/wavelet";
-import { MidiFile } from "midifile-ts";
+import { MidiFile } from "@/lib/midifile-ts";
 import { use, useEffect, useMemo, useRef, useState } from "react";
 import { Stream, deserialize } from "@/lib/midifile-ts/src";
 import { MIDIPlayer } from "./player/MIDIPlayer";
