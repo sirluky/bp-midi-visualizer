@@ -1,5 +1,5 @@
 import { SynthEvent } from "@ryohey/wavelet";
-import { AnyEvent, serialize } from "midifile-ts";
+import { AnyEvent, serialize } from "@/lib/midifile-ts";
 import { TIMER_INTERVAL } from "~/lib/wavelet/example/src/MIDIPlayer";
 
 export class MIDIOutputProcessor {

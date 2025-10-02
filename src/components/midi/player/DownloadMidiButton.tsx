@@ -1,5 +1,5 @@
 import React from "react";
-import { write, MidiFile } from "midifile-ts";
+import { write, MidiFile } from "@/lib/midifile-ts";
 import { MidiParser } from "~/lib/MidiParser";
 import { useToast } from "~/components/ui/use-toast";
 import { GetMidiOutput } from "~/server/api/routers/midi";
