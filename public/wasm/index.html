@@ -1,0 +1,693 @@
+<html>
+
+<head>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+        #render {
+            display: flex;
+            gap: 4px;
+        }
+
+        .column {
+            width: 50px;
+            height: 300px;
+        }
+
+        .column-content {
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.64);
+        }
+
+        .column-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 8px;
+            display: block;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                "Liberation Mono", "Courier New", monospace;
+        }
+
+        .cube {
+            height: 0.7%;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wasm-gui">
+        <br />
+
+        <input id="execute_bytecode" type="text"
+            value="69e30b00000000000000001068e30b000000000001000000ff" />
+        <button onclick="execute()">Execute</button>
+
+        <br />
+
+        <input id="request_bytecode" type="text" value="" />
+        <button onclick="request()">Request</button>
+
+        <br />
+
+        <input id="clock_timestamp" type="number" value="0" />
+        <button onclick="setClock()">Set Clock</button>
+
+        <br />
+
+        <input id="tngl_event_label" type="text" value="brigh" />
+        <input id="tngl_event_value" type="number" value="0" min="-100" max="100" />
+        <button
+            onclick="emitPercentageEvent(document.getElementById('tngl_event_label').value, document.getElementById('tngl_event_value').value * 21474836)">
+            Emit Percentage
+        </button>
+
+        <br />
+        <br />
+
+        <form>
+            <label for="slider1">Event $speed [-100% to 100%]:</label><br />
+            <input type="range" min="-2147483648" max="2147483647" value="2147483647" class="slider" id="slider_speed"
+                oninput="(()=>{
+                const value = document.getElementById('slider_speed').value;
+                emitPercentageEvent('speed', value)
+            })()" /><br />
+            <label for="slider2">Event $brigh [0% to 100%]:</label><br />
+            <input type="range" min="0" max="2147483647" value="2147483647" class="slider" id="slider_brigtness"
+                oninput="(()=>{
+                const value = document.getElementById('slider_brigtness').value;
+                emitPercentageEvent('brigh', value)
+            })()" /><br />
+        </form>
+    </div>
+
+
+    <div id="render"></div>
+
+    <script>
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        const WASM_VERSION = "DEBUG_0.9.13_20240506";
+
+        console.log("spectoda-js wasm version " + WASM_VERSION);
+
+        let moduleInitilized = false;
+        let waitingQueue = [];
+
+        class Wait {
+            constructor() {
+                this.promise = new Promise((resolve, reject) => {
+                    this.reject = reject;
+                    this.resolve = resolve;
+                });
+            }
+        }
+
+        function injectScript(src) {
+            return new Promise((resolve, reject) => {
+                if (typeof window !== "undefined" && document) {
+                    const script = document.createElement("script");
+                    script.src = src;
+                    script.addEventListener("load", resolve);
+                    script.addEventListener("error", e => reject(e.error));
+                    document.head.appendChild(script);
+                }
+            });
+        }
+
+        function onWasmLoad() {
+            console.log("Webassembly loaded");
+
+            Module.onRuntimeInitialized = () => {
+                moduleInitilized = true;
+
+                console.log("Webassembly runtime initilized");
+
+                SpectodaWasm.WasmInterface = Module.WasmInterface;
+                SpectodaWasm.Uint8Vector = Module.Uint8Vector;
+                SpectodaWasm.evaluate_result_t = Module.evaluate_result_t;
+                SpectodaWasm.send_result_t = Module.send_result_t;
+
+                waitingQueue.forEach(wait => {
+                    wait.resolve();
+                });
+
+                Module.onRuntimeInitialized = null;
+            };
+        }
+
+        if (typeof window !== "undefined") {
+            // First try to load local version
+            injectScript(`http://localhost:5555/builds/${WASM_VERSION}.js`)
+                .then(onWasmLoad)
+                .catch(error => {
+                    console.error(error);
+                    // if local version fails, load public file
+                    injectScript(`https://updates.spectoda.com/subdom/updates/webassembly/daily/${WASM_VERSION}.js`)
+                        .then(onWasmLoad)
+                        .catch(error => {
+                            console.error(error);
+                        });
+                });
+        }
+
+        // This class binds the JS world with the webassembly's C
+        const SpectodaWasm = {
+            // const std::vector<uint8_t>&  makePort(const char port_char, const uint32_t port_size, const uint8_t port_brightness, const uint8_t port_power, bool port_visible, bool port_reversed)
+            // void                         begin(const std::string& name_string, const std::string& mac_string, const deviceID_t device_id_offset)
+            // void                         end()
+            // void                         setClockTimestamp(const clock_ms timestamp)
+            // clock_ms                     getClockTimestamp()
+            // evaluate_result_t            execute(const std::vector<uint8_t>& commands_bytecode_vector, const connection_t source_connection)
+            // evaluate_result_t            request(const std::vector<uint8_t>& request_bytecode_vector, std::vector<uint8_t>& response_bytecode_vector_out, const tngl::connection_t source_connection)
+
+            // clone()
+            // delete()
+
+            /**
+             * @type { {
+             *   begin: () => void,
+             *   end: () => void
+             * } }
+             */
+            WasmInterface: null, // Uint8Array;    let array = new Uint8Array()
+
+            // get(arg0)
+            // push_back(arg0)
+            // resize(arg0, arg1)
+            // set(arg0, arg1)
+            // size()
+            // clone()
+            // delete()
+
+            Uint8Vector: null,
+
+            evaluate_result_t: null,
+            send_result_t: null,
+
+            // oposite of convertJSArrayToNumberVector() in https://emscripten.org/docs/api_reference/val.h.html
+            convertNumberVectorToJSArray(vector) {
+                let array = new Uint8Array(vector.size());
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = vector.get(i);
+                }
+                return array;
+            },
+
+            // TODO make it a getter?
+            /**
+             * @return {boolean}
+             */
+            initilized() {
+                return moduleInitilized;
+            },
+
+            /**
+             * @return {Promise<null>}
+             */
+            waitForInitilize() {
+                if (moduleInitilized) {
+                    return Promise.resolve();
+                }
+
+                const wait = new Wait();
+                waitingQueue.push(wait);
+                return wait.promise;
+            },
+        };
+
+        if (typeof window !== "undefined") {
+            window.SpectodaWasm = SpectodaWasm;
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        class Interface {
+
+            #instance;
+
+            #eventEmitter;
+
+            constructor() {
+                this.#instance = null;
+
+                // this.#eventEmitter = createNanoEvents();
+            }
+
+            /**
+             * @param {string} label
+             * @param {string} mac_address
+             * @param {number} id_offset
+             * @return {Promise<null>}
+             */
+            construct(label, mac_address, id_offset) {
+                if (this.#instance) {
+                    throw "AlreadyContructed";
+                }
+
+                return SpectodaWasm.waitForInitilize().then(() => {
+                    const WasmInterfaceImplementation = {
+                        /* Constructor function is optional */
+                        // __construct: function () {
+                        //   this.__parent.__construct.call(this);
+                        // },
+
+                        /* Destructor function is optional */
+                        // __destruct: function () {
+                        //   this.__parent.__destruct.call(this);
+                        // },
+
+                        // virtual void _onEvents(const val& event_array) = 0;
+                        // virtual void _onLocalEvents(const val& event_array) = 0;
+                        // virtual send_result_t _onExecute(const std::vector<uint8_t>& execute_bytecode, const double source_connection_handle) = 0;
+                        // virtual void _onSynchronize(const val& synchronization_object, const double source_connection_handle) = 0;
+
+
+                        _onEvents: event_array => {
+                            // console.log("_onEvents", event_array);
+
+                            // this.#eventEmitter.emit("events", event_array);
+
+                            return undefined;
+                        },
+
+                        _onLocalEvents: event_array => {
+                            // console.log("_onEvents", event_array);
+
+                            // this.#eventEmitter.emit("events", event_array);
+
+                            return undefined;
+                        },
+
+                        _onExecute: (commands_bytecode_vector, source_connection) => {
+                            // console.log("_onExecute", commands_bytecode_vector, source_connection);
+
+                            // try {
+                            //     // dont know how to make Uint8Array in C++ yet. So I am forced to give data out in C++ std::vector
+                            //     const commands_bytecode = SpectodaWasm.convertNumberVectorToJSArray(commands_bytecode_vector);
+
+                            //     console.log("commands_bytecode", commands_bytecode);
+
+                            //     // TODO IMPLEMENT SENDING TO OTHER INTERFACES
+                            // } catch {
+                            //     return Module.send_result_t.SEND_ERROR;
+                            // }
+
+                            return Module.send_result_t.SEND_OK;
+                        },
+
+                        _onSynchronize: (synchronization_object, source_connection) => {
+                            // console.log("_onSynchronize", synchronization_object, source_connection);
+
+                            // this.#eventEmitter.emit("synchronize", synchronization_object, source_connection);
+
+                            return undefined;
+                        },
+
+                        _handlePeerConnected: peer_mac => {
+                            // console.log("_handlePeerConnected", peer_mac);
+
+                            // this.#eventEmitter.emit("peer_connected", peer_mac);
+
+                            return Module.interface_error_t.SUCCESS;
+                        },
+
+                        _handlePeerDisconnected: peer_mac => {
+                            // console.log("_handlePeerDisconnected", peer_mac);
+
+                            // this.#eventEmitter.emit("peer_disconnected", peer_mac);
+
+                            return Module.interface_error_t.SUCCESS;
+                        },
+
+                        // virtual interface_error_t _handleTimelineManipulation(const int32_t timeline_timestamp, const bool timeline_paused, const double clock_timestamp) = 0;
+                        _handleTimelineManipulation: (timeline_timestamp, timeline_paused, clock_timestamp) => {
+                            // console.log("_handleTimelineManipulation", timeline_timestamp, timeline_paused, clock_timestamp);
+
+                            return Module.interface_error_t.SUCCESS;
+                        },
+                    };
+
+                    this.#instance = SpectodaWasm.WasmInterface.implement(WasmInterfaceImplementation);
+                    this.#instance.begin(label, mac_address, id_offset);
+                });
+            }
+
+            destruct() {
+                if (!this.#instance) {
+                    throw "AlreadyDestructed";
+                }
+
+                this.#instance.end(); // end the spectoda stuff
+                this.#instance.delete(); // delete (free) C++ object
+                this.#instance = null; // remove javascript reference
+            }
+
+            /**
+             * @param {number} clock_timestamp
+             * @return {Uint8Vector}
+             */
+            makePort(port_char = "A", port_size = 144, port_brightness = 255, port_power = 255, port_visible = true, port_reversed = false) {
+                if (!this.#instance) {
+                    throw "NotConstructed";
+                }
+
+                // const std::vector<uint8_t>& _makePort(const std::string& port_char, const uint32_t port_size, const uint8_t port_brightness, const uint8_t port_power, bool port_visible, bool port_reversed)
+                return this.#instance.makePort(port_char, port_size, port_brightness, port_power, port_visible, port_reversed);
+            }
+
+            /**
+             * @param {number} clock_timestamp
+             * @return {null}
+             */
+            setClock(clock_timestamp) {
+                if (!this.#instance) {
+                    throw "NotConstructed";
+                }
+
+                if (typeof clock_timestamp == "string") {
+                    clock_timestamp = parseInt(clock_timestamp);
+                }
+
+                if(typeof clock_timestamp != "number" ) {
+                    console.error(`typeof clock_timestamp = ${typeof clock_timestamp}, clock_timestamp = ${clock_timestamp}`);
+                    return;
+                }
+
+                this.#instance.setClockTimestamp(clock_timestamp);
+            }
+
+            /**
+             * @return {number}
+             */
+            getClock() {
+                if (!this.#instance) {
+                    throw "NotConstructed";
+                }
+
+                return this.#instance.getClockTimestamp();
+            }
+
+            /**
+             * @param {Uint8Array} execute_bytecode
+             * @return {}
+             */
+            execute(execute_bytecode, connection_handle) {
+                if (!this.#instance) {
+                    throw "NotConstructed";
+                }
+
+                const evaluate_result = this.#instance.execute(Emval.toHandle(execute_bytecode), connection_handle);
+
+                if (evaluate_result != SpectodaWasm.evaluate_result_t.COMMAND_SUCCESS) {
+                    throw "EvaluateError";
+                }
+            }
+
+            /**
+             * If request_evaluate_result is not SUCCESS the promise is rejected with an exception
+             * @param {Uint8Array} request_bytecode
+             * @return {Uint8Array}
+             */
+            request(request_bytecode, connection_handle) {
+                if (!this.#instance) {
+                    throw "NotConstructed";
+                }
+
+                let response_bytecode_vector = new SpectodaWasm.Uint8Vector();
+
+                try {
+                    const evaluate_result = this.#instance.request(Emval.toHandle(request_bytecode), response_bytecode_vector, connection_handle);
+
+                    if (evaluate_result != SpectodaWasm.evaluate_result_t.COMMAND_SUCCESS) {
+                        throw "EvaluateError";
+                    }
+
+                    return SpectodaWasm.convertNumberVectorToJSArray(response_bytecode_vector);
+                } finally {
+                    response_bytecode_vector.delete();
+                }
+            }
+
+            compute() {
+                if (!this.#instance) {
+                    throw "NotConstructed";
+                }
+
+                this.#instance.compute();
+            }
+
+            render() {
+                if (!this.#instance) {
+                    throw "NotConstructed";
+                }
+
+                this.#instance.render();
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        const PORT_NUMBER = 8;
+        const PIXEL_COUNT = 144;
+        const FPS = 25;
+
+        var portBuffers = [];
+
+        var initilized = false;
+
+        var instance = 0; // interface instance
+
+        const HEAPU32_PTR = function (ptr) {
+            return ptr / 4;
+        };
+
+        function getColorString(r, g, b) {
+            return (
+                "#" +
+                ("0" + r.toString(16)).slice(-2) +
+                ("0" + g.toString(16)).slice(-2) +
+                ("0" + b.toString(16)).slice(-2)
+            );
+        }
+
+        function toUint8Array(numbers) {
+            const arrayBuffer = new ArrayBuffer(numbers.length);
+            const uint8Array = new Uint8Array(arrayBuffer);
+            for (let i = 0; i < numbers.length; i++) {
+                uint8Array[i] = numbers[i];
+            }
+            return uint8Array;
+        }
+
+        function hexStringToNumberArray(hexString) {
+            var numberArray = [];
+            for (var i = 0; i < hexString.length; i += 2) {
+                var hexPair = hexString.substr(i, 2);
+                var number = parseInt(hexPair, 16);
+                numberArray.push(number);
+            }
+            return numberArray;
+        }
+
+        function makeInstance() {
+            if (!initilized) {
+                return;
+            }
+
+            instance = new Interface();
+            return instance.construct("con1", "ff:ff:ff:ff:ff:ff", 0);
+        }
+
+        function makePorts() {
+            if (!initilized) {
+                return;
+            }
+
+            instance.setClock(0);
+
+
+            for (let i = 0; i < PORT_NUMBER; i++) {
+                let tag = String.fromCharCode("A".charCodeAt(0) + i);
+
+                const portDataVector = instance.makePort(
+                    tag,
+                    PIXEL_COUNT,
+                    255,
+                    255,
+                    true,
+                    false
+                );
+
+                portDataVector.set(1, 255);
+
+                portBuffers.push(portDataVector);
+            }
+        }
+
+        function setClock() {
+            if (!initilized) {
+                return;
+            }
+
+            const clock_timestamp = document.getElementById("clock_timestamp").value;
+
+            if (!clock_timestamp) {
+                return;
+            }
+
+            instance.setClock(clock_timestamp);
+        }
+
+        function execute() {
+            if (!initilized) {
+                return;
+            }
+
+            const command_hexstring =
+                document.getElementById("execute_bytecode").value;
+            const command_bytes = toUint8Array(
+                hexStringToNumberArray(command_hexstring)
+            );
+
+            instance.execute(command_bytes, 0);
+        }
+
+        function request() {
+            if (!initilized) {
+                return;
+            }
+
+            const request_hexstring =
+                document.getElementById("execute_bytecode").value;
+            const request_bytes = toUint8Array(
+                hexStringToNumberArray(request_hexstring)
+            );
+
+            instance.request(request_bytes, 0);
+
+        }
+
+        const renderer_dom = document.querySelector("#render");
+
+        function show() {
+            if (!initilized) {
+                return;
+            }
+
+            instance.render();
+
+            renderer_dom.innerHTML = "";
+
+            // console.log(portBuffers[0][0], portBuffers[0][1], portBuffers[0][2]);
+
+            for (var i = 0; i < PORT_NUMBER; i++) {
+                // Create a div to hold the column of cubes
+                var column = document.createElement("div");
+                column.className = "column";
+
+                const title = document.createElement("span");
+                title.className = "column-title";
+                title.innerHTML = `port ${String.fromCharCode(
+                    "A".charCodeAt(0) + i
+                )}`;
+                renderer_dom.appendChild(column);
+
+                var columnContent = document.createElement("div");
+                columnContent.className = "column-content";
+                column.appendChild(columnContent);
+
+                for (var j = PIXEL_COUNT - 1; j >= 0; j--) {
+                    var cube = document.createElement("div");
+                    cube.className = "cube";
+                    cube.style.backgroundColor = getColorString(
+                        portBuffers[i][j * 3 + 0],
+                        portBuffers[i][j * 3 + 1],
+                        portBuffers[i][j * 3 + 2]
+                    );
+                    columnContent.appendChild(cube);
+                }
+                column.appendChild(title);
+            }
+        }
+
+        var lastDataFromParent = undefined;
+
+        window.addEventListener("message", (event) => {
+            // console.log("Received message from parent:", event.data);
+
+            if(event.data === lastDataFromParent) {
+                return;
+            }
+            lastDataFromParent = event.data;
+
+            let data = undefined;
+
+            try {
+                data = JSON.parse(event.data);
+            } catch {
+                console.warn("Failed to parse message from parent");
+                return;
+            }
+
+            if (data.shouldReload) {
+                location.reload();
+            } else if (data.js_eval) {
+                eval(data.js_eval);
+            } else if (data.execute_bytecode) {
+                // console.warn("Setting execute bytecode to", data.execute_bytecode, "from parent")
+                document.querySelector("#execute_bytecode").value =
+                    data.execute_bytecode;
+                execute();
+            } else if (data.request_bytecode) {
+                // console.warn("Setting request bytecode to", data.request_bytecode, "from parent")
+                document.querySelector("#request_bytecode").value =
+                    data.request_bytecode;
+                request();
+            } else if (data.clock_timestamp) {
+                // console.warn("Setting clock timestamp to", data.clock_timestamp, "from parent")
+                document.querySelector("#clock_timestamp").value =
+                    data.clock_timestamp;
+                setClock();
+            }
+        });
+
+        SpectodaWasm.waitForInitilize().then(async () => {
+
+            initilized = true;
+
+            await makeInstance();
+            await makePorts();
+
+            await setClock();
+            await execute();
+            await request();
+
+            setInterval(() => {
+                show();
+            }, 1000 / FPS);
+
+        })
+
+    </script>
+</body>
+
+</html>

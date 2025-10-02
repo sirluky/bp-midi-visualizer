@@ -11,7 +11,7 @@ export const env = createEnv({
       .string()
       .url()
       .refine(
-        (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
+        (str) => !str.includes("YOUR_POSTGRESQL_URI_HERE"),
         "You forgot to change the default URL"
       ),
     NODE_ENV: z
@@ -28,15 +28,15 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url()
     ),
-    DISCORD_CLIENT_ID: z.string(),
-    DISCORD_CLIENT_SECRET: z.string(),
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
-    EMAIL_SERVER_HOST: z.string(),
-    EMAIL_SERVER_PORT: z.string(),
-    EMAIL_SERVER_USER: z.string(),
-    EMAIL_SERVER_PASSWORD: z.string(),
-    EMAIL_FROM: z.string().email(),
+    DISCORD_CLIENT_ID: z.string().optional(),
+    DISCORD_CLIENT_SECRET: z.string().optional(),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+    EMAIL_SERVER_HOST: z.string().optional(),
+    EMAIL_SERVER_PORT: z.string().optional(),
+    EMAIL_SERVER_USER: z.string().optional(),
+    EMAIL_SERVER_PASSWORD: z.string().optional(),
+    EMAIL_FROM: z.string().email().optional(),
   },
 
   /**

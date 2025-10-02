@@ -94,7 +94,7 @@ export default function PreviewButton() {
     <div className="fixed bottom-4 right-4 z-50 flex items-center space-x-2">
       <Dialog open={isOpen} modal={false}>
         <DialogContent
-          closeHandler={() => {}}
+          closeHandler={() => { }}
           useOverlay={false}
           centered={false}
           animate={false}
@@ -108,7 +108,7 @@ export default function PreviewButton() {
           <div className="text-fg-secondary  mb-3 text-sm mt-4">
             Náhled pro virtuální controller <div className="inline font-mono font-semibold">$con1</div>
           </div>
-          <iframe onLoad={iframeOnloadHandler} ref={iframeRef} id="wasm-iframe" height="330px" width="428px" className="overflow-auto rounded-lg" src={"https://wasm.spectoda.com/main"} />
+          <iframe onLoad={iframeOnloadHandler} ref={iframeRef} id="wasm-iframe" height="330px" width="428px" className="overflow-auto rounded-lg" src={"/wasm/index.html"} />
           {/* <div className="text-right mt-1 font-extralight">Náhled pásků prohlížeči je poháněn Spectoda WASM</div> */}
         </DialogContent>
       </Dialog>

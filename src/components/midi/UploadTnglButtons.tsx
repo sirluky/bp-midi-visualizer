@@ -112,7 +112,7 @@ interactive<0x10>(0s, Infinity, $shoot, {
     },
   },
   {
-    name: "Piano Styl",
+    name: "Piano styl",
     code: `
     defDevice($con1, 0x00, 0xff, 150px, $seg1, 0x00, 150px, $seg2, 0x01, 150px, $seg3, 0x02, 150px, $seg4, 0x03, 150px, $seg5, 0x04, 150px, $seg6, 0x05, 150px, $seg7, 0x06, 150px, $seg8, 0x07, {
     });
@@ -146,7 +146,7 @@ interactive<0x10>(0s, Infinity, $shoot, {
     },
   },
   {
-    name: "Nastroje na 1 pasku",
+    name: "Nástroje na 1 pásku",
     code: `
     defDevice($con1, 0x00, 0xff, 96px, $seg1, 0x00, 96px, $seg2, 0x01, 96px, $seg3, 0x02, 96px, $seg4, 0x03, 96px, $seg5, 0x04, 96px, $seg6, 0x05, 96px, $seg7, 0x06, 96px, $seg8, 0x07, { });
 
@@ -203,7 +203,7 @@ interactive<0x10>(0s, Infinity, $shoot, {
     },
   },
   {
-    name: "Noty na 1 pasku",
+    name: "Noty na 1 pásku",
     code: `
     
     defDevice($con1, 0x00, 0xff, 90px, $seg1, 0x00, 90px, $seg2, 0x01, 90px, $seg3, 0x02, 90px, $seg4, 0x03, 90px, $seg5, 0x04, 90px, $seg6, 0x05, 90px, $seg7, 0x06, 90px, $seg8, 0x07, { });
@@ -331,7 +331,7 @@ siftSegments({
     },
   },
   {
-    name: "Barevne vystrely s intenzitou",
+    name: "Barevne výstřely s intenzitou",
     code: `
     defDevice($con1, 0x00, 0xff, 150px, $seg1, 0x00, 150px, $seg2, 0x01, 150px, $seg3, 0x02, 150px, $seg4, 0x03, 150px, $seg5, 0x04, 150px, $seg6, 0x05, 150px, $seg7, 0x06, 150px, $seg8, 0x07, {
     });
