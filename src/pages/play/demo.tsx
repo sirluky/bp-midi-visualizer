@@ -25,18 +25,30 @@ const midiDataExamples = [
 export default function Base64Midi() {
   const [midiOutput, setMidiOutput] = useState<GetMidiOutput | null>(null);
   const [selectedExample, setSelectedExample] = useState(0);
+  const hasExamples = midiDataExamples.length > 0;
 
   useEffect(() => {
-    loadMidiFromBase64(selectedExample);
+    if (hasExamples) {
+      loadMidiFromBase64(selectedExample);
+    } else {
+      setMidiOutput(null);
+    }
   }, [selectedExample]);
 
   const loadMidiFromBase64 = (index: number) => {
     try {
+      if (!Number.isInteger(index) || index < 0 || index >= midiDataExamples.length) {
+        console.error("Neplatny index ukazkove skladby:", index);
+        setMidiOutput(null);
+        return;
+      }
+
       const { name, base64 } = midiDataExamples[index];
       const midiBytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
       setMidiOutput(prepareMidiFromBase64(midiBytes, name));
     } catch (error) {
       console.error("Chyba při dekódování MIDI dat:", error);
+      setMidiOutput(null);
     }
   };
 
@@ -46,7 +58,17 @@ export default function Base64Midi() {
       {/* label výběr demo skladeb */}
       <label className="text-white font-bold mt-3 block">Vyberte ukázkovou skladbu:</label>
 
-      <select className="rounded-lg border bg-white px-4 py-2 leading-tight text-black focus:outline-none focus:ring dark:bg-gray-700 dark:text-white" value={selectedExample} onChange={e => setSelectedExample(Number(e.target.value))}>
+      <select
+        className="rounded-lg border bg-white px-4 py-2 leading-tight text-black focus:outline-none focus:ring dark:bg-gray-700 dark:text-white"
+        value={selectedExample}
+        disabled={!hasExamples}
+        onChange={e => {
+          const nextIndex = Number.parseInt(e.target.value, 10);
+          if (Number.isInteger(nextIndex) && nextIndex >= 0 && nextIndex < midiDataExamples.length) {
+            setSelectedExample(nextIndex);
+          }
+        }}
+      >
         {" "}
         {midiDataExamples.map(({ name }, index) => (
           <option key={index} value={index}>
@@ -54,7 +76,8 @@ export default function Base64Midi() {
           </option>
         ))}
       </select>
-      {midiOutput ? <Player key={selectedExample} midi={midiOutput} /> : <div>Načítání...</div>}
+      {!hasExamples && <div>Zadne ukazkove MIDI neni k dispozici.</div>}
+      {hasExamples && (midiOutput ? <Player key={selectedExample} midi={midiOutput} /> : <div>Načítání...</div>)}
     </div>
   );
 }

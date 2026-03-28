@@ -65,7 +65,7 @@ export function Player({ midi }: PlayerProps) {
       </h2>
 
       {midiData && <DownloadMidiButton midiData={midiData} midiMeta={midi} />}
-      {midiData && <ReworkingPlayer config={midiConfig} parsedMidi={midiData?.data} totalTime={midiData?.totalTime} />}
+      {midiData && <ReworkingPlayer config={midiConfig} parsedMidi={midiData?.data} midiBytes={midi.midi} totalTime={midiData?.totalTime} />}
       {midiData?.introText && midiData.introText.length > 0 && (
         <details className="text-gray-300">
           <summary className="text-xl font-bold mt-5 cursor-pointer">Úvodní text:</summary>

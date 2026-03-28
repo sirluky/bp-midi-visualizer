@@ -1,5 +1,5 @@
-import { SynthEvent } from "@/lib/wavelet/lib/src/index";
 import { AnyEvent, MidiFile } from "@/lib/midifile-ts";
+import { ScheduledSynthEvent } from "./ScheduledSynthEvent";
 
 interface Tick {
   tick: number;
@@ -26,7 +26,7 @@ interface Keyframe {
 export const midiToSynthEvents = (
   midi: MidiFile,
   sampleRate: number,
-): SynthEvent[] => {
+): ScheduledSynthEvent[] => {
   const events = midi.tracks.flatMap(addTick).sort((a, b) => a.tick - b.tick);
   let keyframe: Keyframe = {
     tick: 0,
@@ -34,7 +34,7 @@ export const midiToSynthEvents = (
     timestamp: 0,
   };
 
-  const synthEvents: SynthEvent[] = [];
+  const synthEvents: ScheduledSynthEvent[] = [];
 
   // channel イベントを MIDI Output に送信
   // Send Channel Event to MIDI OUTPUT

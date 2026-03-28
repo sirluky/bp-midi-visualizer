@@ -59,7 +59,7 @@ export const useMidiStore = create<MidiStoreState>()(
         return channel ? channel.solo : false;
       }
 
-      return channel ? channel.enabled : false;
+      return channel ? channel.enabled : true;
     },
   })),
 );

@@ -1,9 +1,9 @@
-import { SynthEvent } from "@ryohey/wavelet";
 import { AnyEvent, EndOfTrackEvent, MIDIControlEvents, MidiFile } from "@/lib/midifile-ts";
 import { useMidiStore } from "../midiSettings/midiSettingsStore";
 import { nanoevents } from "../utils";
 import EventScheduler from "./EventScheduler";
 import { AnyEventWithIndex } from "~/lib/MidiParser";
+import { ScheduledSynthEvent } from "./ScheduledSynthEvent";
 
 export interface Tick {
   tick: number;
@@ -25,7 +25,7 @@ const TIMER_INTERVAL = typeof window !== "undefined" && localStorage.getItem("is
 const LOOK_AHEAD_TIME = typeof window !== "undefined" && localStorage.getItem("isWebMidiEnabled") === "true" ? 30 : 50;
 
 export class MIDIPlayer {
-  private output: (e: SynthEvent) => void;
+  private output: (e: ScheduledSynthEvent) => void;
   private tempo = 120;
   private interval: number | undefined;
   private midi: MidiFile;
@@ -35,7 +35,7 @@ export class MIDIPlayer {
   private endOfSong: number;
   onProgress?: (progress: number) => void;
 
-  constructor(midi: MidiFile, sampleRate: number, output: (e: SynthEvent) => void) {
+  constructor(midi: MidiFile, sampleRate: number, output: (e: ScheduledSynthEvent) => void) {
     this.midi = midi;
     this.sampleRate = sampleRate;
     this.output = output;
@@ -77,6 +77,7 @@ export class MIDIPlayer {
       this.output({
         type: "midi",
         midi: {
+          deltaTime: 0,
           type: "channel",
           subtype: "controller",
           controllerType: MIDIControlEvents.ALL_SOUNDS_OFF,
@@ -93,6 +94,7 @@ export class MIDIPlayer {
       this.output({
         type: "midi",
         midi: {
+          deltaTime: 0,
           type: "channel",
           subtype: "controller",
           controllerType: MIDIControlEvents.RESET_CONTROLLERS,
@@ -125,16 +127,12 @@ export class MIDIPlayer {
     this.onProgress?.(this.scheduler.currentTick / this.endOfSong);
   }
 
-  private handleEvent(e: AnyEventWithIndex & Tick & { enabled: Boolean }, delayTime: number): SynthEvent | null {
+  private handleEvent(e: AnyEventWithIndex & Tick & { enabled: Boolean }, delayTime: number): ScheduledSynthEvent | null {
     nanoevents.emit("midievent", e);
 
     switch (e.type) {
       case "channel":
         e.enabled = useMidiStore.getState().checkChannelEnabledById(e.channel);
-
-        if (e.subtype === "controller" && e.controllerType === 32) {
-          return null;
-        }
 
         if (["noteOn", "noteOff"].includes(e.subtype)) {
           nanoevents.emit("midichannelevent", e);
@@ -157,6 +155,7 @@ export class MIDIPlayer {
           // we could update index always but it's not necessary and more performant
           case "lyrics":
             nanoevents.emit("midi-index-change", e.index);
+            break;
           case "text":
             nanoevents.emit("midi-index-change", e.index);
             break;

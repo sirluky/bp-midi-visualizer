@@ -8,7 +8,6 @@ import InstrumentList from "./midiSettings/InstrumentList";
 import { MIDIPlayer, Tick } from "./player/MIDIPlayer";
 import { isWebMidiEnabledAtom, useMidiPlayer } from "./useMidiPlayer";
 import { formatTime, nanoevents } from "./utils";
-import { MIDIEvent, SynthEvent } from "@ryohey/wavelet";
 import { NoteOffEvent } from "~/lib/midifile-ts/dist";
 import { PlayPauseButton, StopButton } from "./player/Buttons";
 import { AnyEventWithIndex } from "~/lib/MidiParser";

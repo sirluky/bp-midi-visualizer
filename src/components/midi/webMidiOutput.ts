@@ -1,6 +1,5 @@
-import { SynthEvent } from "@ryohey/wavelet";
 import { AnyEvent, serialize } from "@/lib/midifile-ts";
-import { TIMER_INTERVAL } from "~/lib/wavelet/example/src/MIDIPlayer";
+import { ScheduledSynthEvent } from "./player/ScheduledSynthEvent";
 
 export class MIDIOutputProcessor {
   private midiAccess: WebMidi.MIDIAccess | null = null;
@@ -41,11 +40,11 @@ export class MIDIOutputProcessor {
     }
   }
 
-  public processMIDIEvent(event: SynthEvent) {
+  public processMIDIEvent(event: ScheduledSynthEvent) {
     const ev = { ...event.midi, deltaTime: 0 } as AnyEvent;
     const midi = serialize(ev, false);
 
-    if (this.midiOutput && event.type !== "loadSample" && midi.length > 1) {
+    if (this.midiOutput && midi.length > 1) {
       this.midiOutput.send(midi);
     }
   }
